@@ -1,0 +1,34 @@
+.register-container {
+  width: 100%;
+  height: 200vh;
+  padding-left: 10%;
+  padding-top: 2%;
+}
+
+.single-input {
+  margin-bottom: 20px;
+}
+
+.single-input Input {
+  width: 40%;
+}
+
+.login-span {
+  padding-left: 14%;
+}
+
+.err-div {
+  padding-top: 2%;
+  padding-left: 17%;
+  color: red;
+}
+
+.button {
+  margin-top: 2%;
+  margin-left: 18%;
+}
+
+.err-login {
+  padding-left: 17%;
+  color: red;
+}
