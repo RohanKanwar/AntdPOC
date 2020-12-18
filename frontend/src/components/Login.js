@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Input, Button} from 'antd';
 import {useSelector, useDispatch} from 'react-redux';
 import {userLogin} from '../redux/action/userAction';
@@ -12,6 +12,7 @@ function Login(props) {
     const [errMsg, setErrMsg] = useState('');
     const {email_address, password} = entry
     const dispatch = useDispatch()
+
     const userDetails = useSelector(
         state => state.userReducer
     )
@@ -32,13 +33,16 @@ function Login(props) {
             setErrMsg('Please enter password')
         } else {
             // In this part, userDetails value is used for setting err message or success message for login but userDetails value is updated late
-            // await dispatch(userLogin(entry))
-            // console.log(userDetails)
+            await dispatch(userLogin(entry))
+            console.log(userDetails)
             await axios.post('http://localhost:5000/api/user/login', entry).then(res => {
+                console.log(res)
                 if(res.data.message == 'Logged In Successfully') {
                     setShowErr(false)
                     setErrMsg('')
-                    // window.location='/home'
+                    setTimeout(() => {
+                        window.location='/home'
+                    }, 1000)
                 }
                 else {
                     setShowErr(true)
@@ -62,6 +66,10 @@ function Login(props) {
                     <label>Password</label>
                     <br />
                     <Input required type='password' name='password' onChange={handleInputChange} value={password} placeholder='Password'/>
+                </div>
+
+                <div style={{marginBottom: '10px'}}>
+                    <a href='ForgotPassword'>Forgot Password ?</a>
                 </div>
 
                 {showErr == true ? 

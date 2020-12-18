@@ -9,6 +9,15 @@
   margin-bottom: 20px;
 }
 
+.single-input-otp {
+  margin-bottom: 20px;
+  margin-top: 15px;
+}
+
+.single-input-otp Input {
+  width: 40%;
+}
+
 .single-input Input {
   width: 40%;
 }
