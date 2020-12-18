@@ -607,28 +607,6 @@ var studentSchema = new mongoose.Schema({
     }
 })
 
-//List of API's
-//Login - Login with username and password sent in the link by the institute
-//Link Generation
-//Link sent to registered applicant
-//JWT Authentication for login
-//Profile details for particular student/student id- Personal details, Address details, Family details, Academic details, Hobbies & Interest, Other Personal details
- var userSchema = new mongoose.Schema({
-     first_name: {type: String, required: true},
-     last_name: {type: String, required: true},
-     email_address: {type: String, required: true},
-     contact_number: {type: String, required: true},
-     location: {type: String, required: true},
-     name_of_institution: {type:String, required: true},
-     institute_type: {type:String, required: true},
-     role_in_institution: {type:String, required: true},
-     website_link: {type:String, required: true},
-     password: {type: String, required: true}
- })
-
-var User = mongoose.model('User', userSchema);
-module.exports = User;
-
 
 // Email containing username & password to be sent to students whose name is in list uploaded by institute
 // Login api with username and password sent in email by the institute
@@ -637,7 +615,7 @@ module.exports = User;
 // Profile details including student's personal, family, address, academic & interest/hobbies to be submitted for particular student_id
 // For existing student details to be fetched with student_id/email_address
 
-// Login api for student
+// 1. Fetching user details with Login api for student
 // http://localhost:5000/api/student/login, body: {email_address: value, password: value}
 // {
 //     status: 200,
@@ -646,17 +624,26 @@ module.exports = User;
 //         token: value
 //     }
 // }
-//  token value: {
-//     email_address: 'value',
-//     user_name: 'value'
+
+
+// If email or password is incorrect
+// {
+//     status: 400,
+//     message: 'Invalid Credentials'
 // }
 
-// Fetching user/student profile details either with email_address or student_id
+// token value on decoding, we can pass user_name, email_address, student_id or any other user details in it
+//  token value: {
+//     email_address: 'value',
+//     user_name: 'value' or student_id: 'value'
+// }
+
+// 2. Fetching user/student profile details either with email_address or student_id and fetch only those fields whose flag is set to true in student control panel
 // email_address: 'rohankanwar01@gamil.com';
 // student_id: 'id'
 
-// http://localhost:5000/api/student/getProfileDetails, body: (email_address)
-// http://localhost:5000/api/student/getProfileDetails/student_id, params: student_id
+// http://localhost:5000/api/student/getProfileDetails, body: (email_address) (If with email address)
+// http://localhost:5000/api/student/getProfileDetails/student_id, params: student_id (If with student id)
 
 
 // {
@@ -683,7 +670,22 @@ module.exports = User;
             // }
 // }
 
-// Student can enter profile details
+// If wrong email address or student id is passed
+// {
+//     status: 400,
+//     message: 'No such student present'
+// }
+
+// 3. Show/hide particular fields to be controlled in student control panel, can be a checkbox for fields which are to be shown 
+// and submit button for sending the respective details to api which will set flag for particular values/fields
+// http://localhost:5000/api/student_panel/toggleFields, body: {hobbies: false, personal_details: {father_name: true}}
+// {
+//     status: 200,
+//     message: 'Flag values set'
+// }
+
+
+// 4. Student can create a profile
 
 // http://localhost:5000/api/student/createProfile, body: {email_address: '', personal_details: {last_name: 'value'}, academic_details: {name: 'value'}}
 
@@ -692,9 +694,9 @@ module.exports = User;
 //     message: 'created profile successfully'
 // }
 
-//Student can edit profile details
+// 5. Student can edit profile details
 
-// http://localhost:5000/api/student/editProfile/student_id, body: {email_address: '', personal_details: {first_name: "new value"}, family_details: {father_age: new_value}}
+// http://localhost:5000/api/student/editProfile/student_id, body: {email_address: '', personal_details: {first_name: "new value"}, family_details: {father_age: "new_value"}}
 
 
 // {
@@ -703,16 +705,63 @@ module.exports = User;
 //     data: {}
 // }
 
+// If wrong email address or student id is passed
+// {
+//     status: 400,
+//     message: 'No such student present'
+// }
+
 
 // Notifications, Attendance, Reports, Payments, Assignments, Communication, Exam Module
-// Notifications - Notifications regarding assignments(new assignment, submission & report), student should be notified,
+// 6. Notifications - Notifications regarding assignments(new assignment, submission & report), student should be notified,
                 // Notification regarding reports
                 // Notifications regarding succesfull or failed payments
                 // Notifications regarding exam module
 
-// Attendance - 
-// Reports - 
-// Assignments - 
-// Payments - 
-// Communication - 
-// Exam Module - 
+// 7. Attendance - Post student attendance 
+// http://localhost:5000/api/student/markAttendance, body: {email_address: 'value'}
+// {
+    // status: 200,
+    // message: 'marked attendance successfully',
+    // }
+
+// If wrong email address or student id is passed
+// {
+//     status: 400,
+//     message: 'No such student present'
+// }
+
+// 8. Reports - get reports of a student
+// http://localhost:5000/api/student/getReports/student_id, body: {email_address} or params: student_id
+
+// {
+    // status: 200,
+    // message: 'fetched reports successfully',
+    // }
+
+// If wrong email address or student id is passed
+// {
+//     status: 400,
+//     message: 'No such student present'
+// }
+
+// 8. Assignments - get all assignments posted or submit assignment
+// http://localhost:5000/api/student/getAssignments/student_id, body: {email_address} or params: student_id
+// http://localhost:5000/api/student/submitASsignment, body: {email_address, file: value}
+
+
+// 9. Payments - payment for courses
+// 10. Communication - 
+
+// 11. Exam Module - view exam module
+// http://localhost:5000/api/student/getExamModule/student_id, body: {email_address} or params: student_id
+// {
+    // status: 200,
+    // message: 'fetched exam module successfully',
+    // }
+
+// If wrong email address or student id is passed
+// {
+//     status: 400,
+//     message: 'No such student present'
+// }
